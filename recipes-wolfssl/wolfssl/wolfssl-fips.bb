@@ -1,9 +1,5 @@
 SUMMARY = "wolfSSL FIPS 140-3 Validated Cryptography"
 DESCRIPTION = "wolfSSL is a lightweight SSL/TLS library with FIPS 140-3 validated cryptography module. This recipe provides the FIPS-validated version of wolfSSL."
-
-# Default to a placeholder; users should set WOLFSSL_VERSION to their bundle version
-WOLFSSL_VERSION ?= "0.0.0"
-PV = "${WOLFSSL_VERSION}"
 HOMEPAGE = "https://www.wolfssl.com/products/wolfssl-fips/"
 BUGTRACKER = "https://github.com/wolfssl/wolfssl/issues"
 SECTION = "libs"
@@ -18,13 +14,9 @@ DEPENDS += "util-linux-native"
 # - wolfssl-fips (automatic from recipe name)
 # - virtual/wolfssl (build-time interface for switching implementations)
 # At runtime, the wolfssl-fips package provides wolfssl to satisfy package dependencies
-PROVIDES += "wolfssl-fips virtual/wolfssl"
+PROVIDES += "virtual/wolfssl"
 
 inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility
-
-python __anonymous() {
-    wolfssl_varAppend(d, 'RPROVIDES', '${PN}', ' wolfssl')
-}
 
 # Lower preference so regular wolfssl is default
 # Users must explicitly set PREFERRED_PROVIDER_virtual/wolfssl = "wolfssl-fips"
@@ -65,7 +57,7 @@ SRC_URI = "${@get_commercial_src_uri(d)}"
 S = "${@get_commercial_source_dir(d)}"
 
 # Optional: switch to GCS/tarball flow (gs:// URI) when set
-require ${WOLFSSL_LAYERDIR}/inc/wolfssl-fips/wolfssl-commercial-gcs.inc
+require inc/wolfssl-fips/wolfssl-commercial-gcs.inc
 
 # Skip the package check for wolfssl-fips itself (it's the base library)
 deltask do_wolfssl_check_package
@@ -77,7 +69,7 @@ BBCLASSEXTEND = "${@'native nativesdk' if (d.getVar('WOLFSSL_SRC') or '').strip(
 # Note: FIPS hash is handled by wolfssl-fips-helper.bbclass
 TARGET_CFLAGS += "-DFP_MAX_BITS=16384"
 EXTRA_OECONF += " \
-    --enable-fips=v5 \
+    --enable-fips=v6 \
     --enable-reproducible-build \
     --enable-smallstack \
     --enable-sp-math-all \

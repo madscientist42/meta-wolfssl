@@ -7,7 +7,7 @@ LICENSE = "GPL-3.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 DEPENDS += "util-linux-native"
 
-PROVIDES += "wolfssl virtual/wolfssl"
+PROVIDES += "virtual/wolfssl"
 
 SRC_URI = "git://github.com/wolfssl/wolfssl.git;nobranch=1;protocol=https;rev=ac01707f552c611fbd135cc723b2682b3e7f80f2"
 

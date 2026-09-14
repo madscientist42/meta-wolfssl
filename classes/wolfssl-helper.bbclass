@@ -20,9 +20,9 @@ def wolfssl_conditional_require(d, package_name, inc_path):
 
     if bb.utils.contains('WOLFSSL_FEATURES', package_name, True, False, d) or \
        bb.utils.contains('IMAGE_INSTALL', package_name, True, False, d):
-        # Get the meta-wolfssl layer directory from variable set in layer.conf
-        layerdir = d.getVar('WOLFSSL_LAYERDIR')
-        inc_file = os.path.join(layerdir, inc_path)
+        # Get the meta-wolfssl layer directory from variable set in layer.conf 
+        # (You DO NOT need to specify your layer's directory to do this sort of thing!)
+        inc_file = inc_path
         bb.parse.mark_dependency(d, inc_file)
         bb.parse.handle(inc_file, d, True)
 
@@ -92,17 +92,14 @@ def wolfssl_conditional_require_mode(d, package_name, mode, inc_file=None):
 
     included_any = False
 
-    layerdir = d.getVar('WOLFSSL_LAYERDIR')
-    if not layerdir:
-        bb.fatal("WOLFSSL_LAYERDIR not set - ensure meta-wolfssl layer is properly configured")
-
     for single_mode, single_inc in mode_map.items():
         if single_mode not in current_modes:
             bb.debug(2, f"{package_name}: {mode_var_name}='{current_mode_str}' does not contain '{single_mode}' - skipping")
             continue
 
         bb.debug(2, f"{package_name}: {mode_var_name}='{current_mode_str}' contains '{single_mode}' mode - including {single_inc}")
-        full_inc_file = os.path.join(layerdir, single_inc)
+        # Hack.  You didn't NEED your layerdir for this.  It should be automatically assumed in seach path.  Bypassing this construct.
+        full_inc_file = single_inc
         bb.parse.mark_dependency(d, full_inc_file)
         try:
             bb.parse.handle(full_inc_file, d, True)
@@ -159,11 +156,9 @@ def wolfssl_conditional_require_flag(d, flag_name, inc_file):
     # Flag found in list - include the configuration
     bb.debug(2, f"{package_name}: {flags_var_name}='{current_flags_str}' contains '{flag_name}' flag - including {inc_file}")
 
-    layerdir = d.getVar('WOLFSSL_LAYERDIR')
-    if not layerdir:
-        bb.fatal("WOLFSSL_LAYERDIR not set - ensure meta-wolfssl layer is properly configured")
-
-    full_inc_file = os.path.join(layerdir, inc_file)
+    # Bypassing the original with a hack.  You don't need to do the original construct- search path is supposed to
+    # be used instead and it's a relative thing and it BREAKS .bbappends, etc. BADLY when you do this.
+    full_inc_file = inc_file
     bb.parse.mark_dependency(d, full_inc_file)
     try:
         bb.parse.handle(full_inc_file, d, True)
@@ -179,9 +174,10 @@ python do_wolfssl_check_package() {
     package_name = d.getVar('PN')
     image_install = d.getVar('IMAGE_INSTALL') or ''
     wolfssl_features = d.getVar('WOLFSSL_FEATURES') or ''
+    overrides = d.getVar('OVERRIDES') or ''
 
     # Check if this package is in either IMAGE_INSTALL or WOLFSSL_FEATURES
-    if package_name not in image_install and package_name not in wolfssl_features:
+    if package_name not in image_install and package_name not in wolfssl_features and package_name not in overrides:
         bb.fatal("%s requires either:\n" \
                  "  - '%s' in IMAGE_INSTALL, or\n" \
                  "  - 'WOLFSSL_FEATURES = \"%s\"' in local.conf\n" \
@@ -192,9 +188,9 @@ python do_wolfssl_check_package() {
 addtask wolfssl_check_package before do_configure after do_fetch
 
 python() {
-    distro_version = d.getVar('DISTRO_VERSION', True)
+    override_mode = d.getVar('WOLFSSL_OVERRIDE_MODE', True)
     autogen_command = 'cd ${S}; if [ -f ${S}/autogen.sh ]; then ./autogen.sh; fi'
-    if distro_version and (distro_version.startswith('2.') or distro_version.startswith('3.')):
+    if override_mode and (override_mode == 'legacy') :
         # For Dunfell and earlier
         d.appendVar('do_configure_prepend', autogen_command)
     else:

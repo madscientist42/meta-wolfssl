@@ -1,18 +1,3 @@
-# Per-release variant selection (lists in conf/layer.conf)
-def _wsel_inc_wolfcrypt_py_wolfssl_enable_wolfcrypt_py(d):
-    import os
-    series = (d.getVar('LAYERSERIES_CORENAMES') or '').split()
-    legacy = set((d.getVar('WOLFSSL_LEGACY_SERIES') or '').split())
-    modern = set((d.getVar('WOLFSSL_MODERN_SERIES') or '').split())
-    variant = 'modern'
-    codename = series[-1] if series else ''
-    for s in series:
-        codename = s
-        if s in legacy:
-            variant = 'legacy'
-            break
-        if s in modern:
-            variant = 'modern'
-            break
-    return os.path.join(d.getVar('WOLFSSL_LAYERDIR'), 'inc/wolfcrypt-py/wolfssl-enable-wolfcrypt-py-{variant}.inc'.format(variant=variant, codename=codename))
-require ${@_wsel_inc_wolfcrypt_py_wolfssl_enable_wolfcrypt_py(d)}
+# Configuration to enable wolfcrypt-py support in wolfssl
+# Python bindings need specific crypto features enabled
+EXTRA_OECONF += " --enable-aes --enable-aesctr --enable-des3 --enable-chacha --enable-aesgcm-stream --enable-aesgcm --enable-sha --enable-sha384 --enable-sha512 --enable-sha3 --enable-hkdf --enable-rsa --enable-rsapss --enable-ecc --enable-ed25519 --enable-ed448 --enable-curve25519 --enable-keygen --enable-pwdbased --enable-pkcs7 --enable-dtls --enable-tls13 --enable-tlsx"

@@ -66,7 +66,7 @@ S = "${@ get_commercial_source_dir(d) }"
 B = "${S}"
 
 # Optional: switch to GCS/tarball flow (gs:// URI) when set
-require ${WOLFSSL_LAYERDIR}/inc/wolfssl-fips/wolfssl-commercial-gcs.inc
+require inc/wolfssl-fips/wolfssl-commercial-gcs.inc
 
 # Build depends on the kernel
 DEPENDS += "binutils-cross-${TARGET_ARCH}"

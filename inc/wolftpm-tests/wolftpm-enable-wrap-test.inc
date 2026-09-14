@@ -1,18 +1,28 @@
-# Per-release variant selection (lists in conf/layer.conf)
-def _wsel_inc_wolftpm_tests_wolftpm_enable_wrap_test(d):
-    import os
-    series = (d.getVar('LAYERSERIES_CORENAMES') or '').split()
-    legacy = set((d.getVar('WOLFSSL_LEGACY_SERIES') or '').split())
-    modern = set((d.getVar('WOLFSSL_MODERN_SERIES') or '').split())
-    variant = 'modern'
-    codename = series[-1] if series else ''
-    for s in series:
-        codename = s
-        if s in legacy:
-            variant = 'legacy'
-            break
-        if s in modern:
-            variant = 'modern'
-            break
-    return os.path.join(d.getVar('WOLFSSL_LAYERDIR'), 'inc/wolftpm-tests/wolftpm-enable-wrap-test-{variant}.inc'.format(variant=variant, codename=codename))
-require ${@_wsel_inc_wolftpm_tests_wolftpm_enable_wrap_test(d)}
+# Enable wrap_test installation for wolfTPM
+#
+# This include file configures wolfTPM to build and install the wrap_test
+# example to the target system for testing.
+
+WOLFTPM_TEST_DIR = "${B}/examples/wrap/.libs"
+WOLFTPM_TEST = "wrap_test"
+WOLFTPM_TEST_YOCTO = "wolftpm-wrap-test"
+WOLFTPM_INSTALL_DIR = "${D}${bindir}"
+
+# Configurations (--enable-devtpm is required for the TPM simulator to work)
+EXTRA_OECONF += "--enable-devtpm"
+
+python () {
+    # Get the environment variables WOLFTPM_TEST_DIR, WOLFTPM_TEST,
+    # WOLFTPM_TEST_YOCTO, and WOLFTPM_INSTALL_DIR
+    wolftpm_test_dir = d.getVar('WOLFTPM_TEST_DIR', True)
+    wolftpm_test = d.getVar('WOLFTPM_TEST', True)
+    wolftpm_test_yocto = d.getVar('WOLFTPM_TEST_YOCTO', True)
+    wolftpm_install_dir = d.getVar('WOLFTPM_INSTALL_DIR', True)
+
+    installDir = 'install -m 0755 -d "%s"\n' % (wolftpm_install_dir)
+    cpWrapTest = 'cp "%s/%s" "%s/%s"\n' % (wolftpm_test_dir, wolftpm_test,
+        wolftpm_install_dir, wolftpm_test_yocto)
+
+    d.appendVar('do_install', installDir)
+    d.appendVar('do_install', cpWrapTest)
+}

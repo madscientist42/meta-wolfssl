@@ -3,31 +3,17 @@
 
 def wolfssl_uses_colon_syntax(d):
     """
-    Detect if this Yocto version uses colon syntax (Honister 3.4+ / LAYERVERSION_core >= 14).
-    Falls back to checking DISTRO_VERSION if LAYERVERSION_core unavailable.
+        Report back if this is a version that needs '_' or ":" separators for override syntax.
+        (Original code tries, and fails, to detect this state off of version when it should
+        just check the running tab of which we support in either mode or not which is CLEANLY
+        and in a Yocto Idiomatic manner, done in the layer config file where policy should live.
     """
-    try:
-        # Check OE-Core layer version (most reliable)
-        layer_version = d.getVar('LAYERVERSION_core') or d.getVar('LAYERVERSION_core', True)
-        if layer_version:
-            return int(layer_version) >= 14
-    except:
-        pass
-
-    # Fallback: check DISTRO_VERSION
-    try:
-        distro_version = d.getVar('DISTRO_VERSION') or d.getVar('DISTRO_VERSION', True)
-        if distro_version:
-            # Versions 2.x and 3.x before 3.4 use underscore
-            if distro_version.startswith('2.') or distro_version.startswith('3.0') or \
-               distro_version.startswith('3.1') or distro_version.startswith('3.2') or \
-               distro_version.startswith('3.3'):
-                return False
-    except:
-        pass
-
-    # Default to colon syntax for unknown/newer versions
-    return True
+    override_mode = d.getVar('WOLFSSL_OVERRIDE_MODE', True)
+    if (override_mode and (override_mode == 'modern')):
+        return True
+    else:
+        return False
+    
 
 def wolfssl_varAppend(d, base_var, package_name, value):
     """

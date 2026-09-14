@@ -1,18 +1,13 @@
-# Per-release variant selection (lists in conf/layer.conf)
-def _wsel_inc_wolfssl_manual_config(d):
-    import os
-    series = (d.getVar('LAYERSERIES_CORENAMES') or '').split()
-    legacy = set((d.getVar('WOLFSSL_LEGACY_SERIES') or '').split())
-    modern = set((d.getVar('WOLFSSL_MODERN_SERIES') or '').split())
-    variant = 'modern'
-    codename = series[-1] if series else ''
-    for s in series:
-        codename = s
-        if s in legacy:
-            variant = 'legacy'
-            break
-        if s in modern:
-            variant = 'modern'
-            break
-    return os.path.join(d.getVar('WOLFSSL_LAYERDIR'), 'inc/wolfssl-manual-config-{variant}.inc'.format(variant=variant, codename=codename))
-require ${@_wsel_inc_wolfssl_manual_config(d)}
+# Include this file in any wolfSSL package bbappend when manually configuring wolfSSL.
+# This will disable the feature check task that validates IMAGE_INSTALL or WOLFSSL_FEATURES.
+#
+# Usage in your-layer/recipes-wolfssl/<package>/<package>_%.bbappend:
+#   require inc/wolfssl-manual-config.inc
+#
+# Or with full path:
+#   require ${COREBASE}/../meta-wolfssl/inc/wolfssl-manual-config.inc
+#
+# Note: You also need to configure wolfSSL by including the appropriate
+# wolfssl-enable-*.inc file(s) in your wolfssl_%.bbappend file.
+
+deltask do_wolfssl_check_package

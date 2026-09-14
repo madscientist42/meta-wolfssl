@@ -17,7 +17,7 @@ DEPENDS += "util-linux-native unzip-native"
 # - wolfssl-fips-ready (automatic from recipe name)
 # - virtual/wolfssl (build-time interface for switching implementations)
 # At runtime, the wolfssl-fips-ready package provides wolfssl to satisfy package dependencies
-PROVIDES += "wolfssl-fips-ready virtual/wolfssl"
+PROVIDES += "virtual/wolfssl"
 
 inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility
 

@@ -81,11 +81,11 @@ def wolfssl_osp_conditional_include(d, feature_name, inc_file, allowed_providers
     bb.debug(2, f"{feature_name}: WOLFSSL_FEATURES enabled + provider '{current_provider}' allowed - enabling wolfSSL backend")
 
     # Resolve full path to include file
-    layer_dir = d.getVar('WOLFSSL_LAYERDIR')
-    if not layer_dir:
-        bb.fatal("WOLFSSL_LAYERDIR not set - ensure meta-wolfssl layer is properly configured")
-
-    full_inc_file = os.path.join(layer_dir, inc_file)
+    # FIXME - Removing the braindead here.  You didn't NEED to set WOLFSSL_LAYERDIR.  Recipes and helpers do not
+    #         ever need layerdir.  Recipes can reference THISDIR relative to where the layer top IS or strip off
+    #         unneeded gunk and make it all relative to the bloody layer in question as Yocto WILL search for the
+    #         pattern of the path you're trying to include, etc. 
+    full_inc_file = inc_file
 
     # Include the configuration file
     try:
@@ -137,11 +137,11 @@ def wolfssl_conditional_include_ext(d, enable_for, inc_file, allowed_providers=N
     bb.debug(2, f"{enable_for}: IMAGE_INSTALL/WOLFSSL_FEATURES enabled + provider '{current_provider}' allowed - enabling wolfSSL backend")
 
     # Resolve full path to include file
-    layer_dir = d.getVar('WOLFSSL_LAYERDIR')
-    if not layer_dir:
-        bb.fatal("WOLFSSL_LAYERDIR not set - ensure meta-wolfssl layer is properly configured")
-
-    full_inc_file = os.path.join(layer_dir, inc_file)
+    # FIXME - Removing the braindead here.  You didn't NEED to set WOLFSSL_LAYERDIR.  Recipes and helpers do not
+    #         ever need layerdir.  Recipes can reference THISDIR relative to where the layer top IS or strip off
+    #         unneeded gunk and make it all relative to the bloody layer in question as Yocto WILL search for the
+    #         pattern of the path you're trying to include, etc. 
+    full_inc_file = inc_file
 
     # Include the configuration file
     try:
@@ -216,11 +216,11 @@ def wolfssl_osp_include_if_provider(d, inc_file, allowed_providers):
     bb.debug(2, f"Provider '{current_provider}' matches - including {inc_file}")
 
     # Resolve full path to include file
-    layer_dir = d.getVar('WOLFSSL_LAYERDIR')
-    if not layer_dir:
-        bb.fatal("WOLFSSL_LAYERDIR not set - ensure meta-wolfssl layer is properly configured")
-
-    full_inc_file = os.path.join(layer_dir, inc_file)
+    # FIXME - Removing the braindead here.  You didn't NEED to set WOLFSSL_LAYERDIR.  Recipes and helpers do not
+    #         ever need layerdir.  Recipes can reference THISDIR relative to where the layer top IS or strip off
+    #         unneeded gunk and make it all relative to the bloody layer in question as Yocto WILL search for the
+    #         pattern of the path you're trying to include, etc. 
+    full_inc_file = inc_file
 
     # Include the configuration file
     try:

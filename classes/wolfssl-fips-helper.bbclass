@@ -84,18 +84,13 @@ python __anonymous () {
     import bb
 
     mode = d.getVar('WOLFSSL_FIPS_HASH_MODE')
-    distro_version = d.getVar('DISTRO_VERSION')
 
-    # Add clean function to do_configure (version-compatible based on DISTRO_VERSION)
-    clean_command = 'wolfssl_fips_clean_config\n'
-
-    if distro_version and (distro_version.startswith('2.') or distro_version.startswith('3.')):
-        # For Dunfell (3.x) and earlier - use old style variable
-        existing = d.getVar('do_configure_prepend') or ''
-        d.setVar('do_configure_prepend', clean_command + existing)
-    else:
-        # For Kirkstone (4.x) and later - use prefuncs
-        d.appendVarFlag('do_configure', 'prefuncs', ' wolfssl_fips_clean_config')
+    # Add in a clean function to do_configure so that it will do the right things
+    # on a reconfig here...  (Original code was under the impression that prefuncs
+    # wasn't around for Dunfell (3.x) and earlier, which would be wrong.  That was
+    # the line in the sand where they OWNED that it was in there, but it's been
+    # in the backend and usable back to 1.x times...)
+    d.appendVarFlag('do_configure', 'prefuncs', ' wolfssl_fips_clean_config')
 
     # Only set up for auto mode
     if mode == 'auto':
@@ -106,8 +101,7 @@ python __anonymous () {
         d.appendVar('DEPENDS', ' qemu-native')
 
         # Include crypttests configuration for auto mode
-        include_file = d.expand('${WOLFSSL_LAYERDIR}/inc/wolfcrypttest/wolfssl-enable-wolfcrypttest.inc')
-        bb.parse.handle(include_file, d, True)
+        bb.parse.handle('inc/wolfcrypttest/wolfssl-enable-wolfcrypttest.inc', d, True)
 
         bb.build.addtask('do_wolfssl_fips_capture_hash', 'do_compile', 'do_configure', d)
     else:
@@ -156,19 +150,26 @@ wolfssl_fips_capture_hash() {
         return 1
     fi
 
-    # Parse the hash from output
-    local parsed=$(grep -E "hash = " "${temp_log}" | tail -n1 | awk -F'=' '{print $2}' | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
+    # Parse the hash from output - do it as a one-stop, one process job that's faster/ultimately simpler.
+    local parsed=$(awk '
+        tolower($0) ~ /hash = / {
+        n = split($0, a, /hash = /)
+        gsub(/[^0-9A-Fa-f]/, "", a[n])
+        if (length(a[n]) == 64) h = a[n]
+        }
+    END { print toupper(h) }' "${temp_log}")
 
     # Debug: show output if parsing failed
     if [ -z "${parsed}" ]; then
-        bberror "Failed to parse FIPS hash from test output"
-        bberror "Test output (first 30 lines):"
-        head -30 ${temp_log} || true
+        bberror "Failed to parse FIPS hash from test output :"
+        cat ${temp_log}
         rm -f ${temp_log}
         return 1
     fi
 
+    # Drop the content on the floor- we don't need it any more.
     rm -f ${temp_log}
+    
     bbnote "wolfSSL FIPS hash extracted: ${parsed}"
 
     # Return the hash value

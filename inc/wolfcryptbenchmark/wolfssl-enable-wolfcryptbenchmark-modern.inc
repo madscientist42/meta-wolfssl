@@ -1,10 +1,4 @@
-# Configuration to enable wolfcryptbenchmark support in wolfssl
-EXTRA_OECONF += "--enable-crypttests"
-
-python () {
-    files_var = 'FILES:' + d.getVar('PN')
-    d.appendVar(files_var, ' ${bindir}/wolfcryptbenchmark')
-}
+FILES:${PN} += "${bindir}/wolfcryptbenchmark"
 
 do_install:append() {
     bbnote "Installing wolfCrypt Benchmarks"
@@ -15,5 +9,3 @@ do_install:append() {
 
     install -Dm0755 "${B}/wolfcrypt/benchmark/.libs/benchmark" "${D}${bindir}/wolfcryptbenchmark"
 }
-
-TARGET_CFLAGS += "-DUSE_CERT_BUFFERS_2048 -DUSE_CERT_BUFFERS_256 -DBENCH_EMBEDDED"

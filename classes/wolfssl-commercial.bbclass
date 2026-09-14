@@ -116,7 +116,8 @@ def get_commercial_bbclassextend(d):
         return 'native nativesdk'
     return ''
 
-# Generic variables for commercial bundle extraction
+# Generic variables for commercial bundle extraction - Pathing is relative to the recipe fielding it.
+DEFAULT_BUNDLE_PLACEHOLDER := "${THISDIR}/commercial/files/README.md"   
 COMMERCIAL_BUNDLE_ENABLED ?= "0"
 COMMERCIAL_BUNDLE_DIR ?= ""
 COMMERCIAL_BUNDLE_NAME ?= ""
@@ -124,7 +125,7 @@ COMMERCIAL_BUNDLE_FILE ?= ""
 COMMERCIAL_BUNDLE_PASS ?= ""
 COMMERCIAL_BUNDLE_SHA ?= ""
 COMMERCIAL_BUNDLE_TARGET ?= "${WORKDIR}"
-COMMERCIAL_BUNDLE_PLACEHOLDER ?= "${WOLFSSL_LAYERDIR}/recipes-wolfssl/wolfssl/commercial/files/README.md"
+COMMERCIAL_BUNDLE_PLACEHOLDER ?= "${DEFAULT_BUNDLE_PLACEHOLDER}"
 COMMERCIAL_BUNDLE_GCS_URI ?= ""
 COMMERCIAL_BUNDLE_SRC_DIR ?= ""
 COMMERCIAL_BUNDLE_ARCHIVE = "${@get_commercial_bundle_archive(d)}"
@@ -298,8 +299,8 @@ do_configure() {
     fi
 }
 
-# Task to create stub autogen.sh for commercial bundles
-do_commercial_stub_autogen() {
+# Prefuncs function to create stub autogen.sh for commercial bundles
+commercial_stub_autogen() {
     if [ "${COMMERCIAL_BUNDLE_ENABLED}" != "1" ]; then
         bbnote "Commercial bundle disabled; skipping autogen stub."
         exit 0
@@ -326,6 +327,4 @@ do_commercial_stub_autogen() {
         chmod +x ${S}/autogen.sh
     fi
 }
-
-# Add task after unpack (or commercial_extract for 7z), before configure
-addtask commercial_stub_autogen after do_unpack before do_configure
+do_configure[prefuncs] = "commercial_stub_autogen"

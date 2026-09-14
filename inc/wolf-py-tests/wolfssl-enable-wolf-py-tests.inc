@@ -1,18 +1,14 @@
-# Per-release variant selection (lists in conf/layer.conf)
-def _wsel_inc_wolf_py_tests_wolfssl_enable_wolf_py_tests(d):
-    import os
-    series = (d.getVar('LAYERSERIES_CORENAMES') or '').split()
-    legacy = set((d.getVar('WOLFSSL_LEGACY_SERIES') or '').split())
-    modern = set((d.getVar('WOLFSSL_MODERN_SERIES') or '').split())
-    variant = 'modern'
-    codename = series[-1] if series else ''
-    for s in series:
-        codename = s
-        if s in legacy:
-            variant = 'legacy'
-            break
-        if s in modern:
-            variant = 'modern'
-            break
-    return os.path.join(d.getVar('WOLFSSL_LAYERDIR'), 'inc/wolf-py-tests/wolfssl-enable-wolf-py-tests-{variant}.inc'.format(variant=variant, codename=codename))
-require ${@_wsel_inc_wolf_py_tests_wolfssl_enable_wolf_py_tests(d)}
+# Configuration to enable wolf-py-tests support in wolfssl
+# Python tests may need specific features enabled
+#
+# Declarative on purpose: this inc is included by wolfssl_conditional_require()
+# from an anonymous function, and python () blocks registered that late never
+# run. FILES uses the literal package name because expandKeys() has already run.
+EXTRA_OECONF += "--enable-shared"
+
+WOLFSSL_PY_TEST_CERTS_DIR = "/home/root/wolf-py-tests/certs"
+WOLFSSL_PY_CERTS_DIR = "/certs"
+WOLFSSL_PY_CERTS_INSTALL_DIR = "${D}${WOLFSSL_PY_TEST_CERTS_DIR}"
+WOLFSSL_PY_CERTS_SOURCE_DIR = "${S}${WOLFSSL_PY_CERTS_DIR}"
+
+include inc/wolf-py-tests/wolfssl-py-enable-wolf-py-tests-${WOLFSSL_OVERIDE_MODE}.inc
