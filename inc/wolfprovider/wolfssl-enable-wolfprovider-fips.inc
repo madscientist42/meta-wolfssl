@@ -7,4 +7,4 @@ TARGET_CFLAGS += " -DWOLFSSL_OLD_OID_SUM -DWOLFSSL_DH_EXTRA"
 # Use a marker file to signal we are a FIPS build
 WOLFSSL_ISFIPS = "1"
 
-include inc/wolfprovider/wolfssl-enable-wolfprovider-fips-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/wolfprovider/wolfssl-enable-wolfprovider-fips-${WOLFSSL_OVERRIDE_MODE}.inc

@@ -1,1 +1,1 @@
-include inc/nettle/nettle-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/nettle/nettle-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERRIDE_MODE}.inc

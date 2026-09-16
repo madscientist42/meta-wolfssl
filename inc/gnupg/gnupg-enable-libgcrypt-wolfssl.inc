@@ -1,1 +1,1 @@
-include inc/gnupg/gnupg-enable-wolfprovider-fips-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/gnupg/gnupg-enable-wolfprovider-fips-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERRIDE_MODE}.inc

@@ -1,1 +1,1 @@
-include inc/libgcrypt/libgcrypt-enable-wolfprovider-fips-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/libgcrypt/libgcrypt-enable-wolfprovider-fips-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERRIDE_MODE}.inc

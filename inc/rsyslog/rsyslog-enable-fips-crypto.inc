@@ -1,1 +1,1 @@
-include inc/rsyslog/rsyslog-enable-fips-crypto-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/rsyslog/rsyslog-enable-fips-crypto-${LAYERSERIES_CORENAMES}-${WOLFSSL_OVERRIDE_MODE}.inc

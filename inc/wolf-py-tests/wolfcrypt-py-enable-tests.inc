@@ -8,7 +8,7 @@ WOLFCRYPT_PY_TEST_DIR = "${S}"
 WOLFCRYPT_PY_DIR = "/home/root/wolf-py-tests/wolfcrypt-py-test"
 WOLFCRYPT_PY_TEST_TARGET_DIR = "${D}${WOLFCRYPT_PY_DIR}"
 
-include inc/wolf-py-tests/wolfcrypt-py-enable-tests-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/wolf-py-tests/wolfcrypt-py-enable-tests-${WOLFSSL_OVERRIDE_MODE}.inc
 
 # Python Specific option
 export PYTHONDONTWRITEBYTECODE = "1"

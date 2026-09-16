@@ -11,4 +11,4 @@ WOLFSSL_PY_CERTS_DIR = "/certs"
 WOLFSSL_PY_CERTS_INSTALL_DIR = "${D}${WOLFSSL_PY_TEST_CERTS_DIR}"
 WOLFSSL_PY_CERTS_SOURCE_DIR = "${S}${WOLFSSL_PY_CERTS_DIR}"
 
-include inc/wolf-py-tests/wolfssl-py-enable-wolf-py-tests-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/wolf-py-tests/wolfssl-py-enable-wolf-py-tests-${WOLFSSL_OVERRIDE_MODE}.inc

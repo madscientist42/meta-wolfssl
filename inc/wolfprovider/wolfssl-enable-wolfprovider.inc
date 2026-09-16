@@ -7,4 +7,4 @@ TARGET_CFLAGS += " -DWC_RSA_NO_PADDING -DWOLFSSL_PUBLIC_MP -DHAVE_PUBLIC_FFDHE -
 # Use a marker file to signal we are a non-FIPS build
 WOLFSSL_ISFIPS = "0"
 
-include inc/wolfprovider/wolfssl-enable-wolfprovider-${WOLFSSL_OVERIDE_MODE}.inc
+include inc/wolfprovider/wolfssl-enable-wolfprovider-${WOLFSSL_OVERRIDE_MODE}.inc

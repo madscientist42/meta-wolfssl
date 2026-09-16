@@ -1,3 +1,8 @@
+# Inherit if we've not already.  Doesn't hurt anything other than the parse time...
+inherit wolfssl-helper
+
+fuckme
+
 # Configuration to enable wolfcrypttest support in wolfssl
 EXTRA_OECONF += "--enable-crypttests"
 
