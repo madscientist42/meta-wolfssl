@@ -10,15 +10,14 @@ LIC_FILES_CHKSUM = "file://${WOLFSSL_LICENSE};md5=${WOLFSSL_LICENSE_MD5}"
 
 DEPENDS += "util-linux-native"
 
-# This recipe provides:
-# - wolfssl-fips (automatic from recipe name)
-# - virtual/wolfssl (build-time interface for switching implementations)
-# At runtime, the wolfssl-fips package provides wolfssl to satisfy package dependencies
-PROVIDES += "virtual/wolfssl"
+# We can provide for any of them.  Right now we're going to default to this being
+# always so and then handle it as an .inc that does the right things based off
+# of some WOLFSSL_COMPAT settings in the layer so it does the right things ALWAYS.
+PROVIDES += "virtual/wolfssl virtual/libssl virtual/openssl"
 
 # Handle the overrides for RPROVIDES on this recipe so it's consistent with everything
 python __anonymous() {
-    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl')
+    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl virtual-libssl virtual-openssl')
 }
 
 inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility

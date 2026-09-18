@@ -13,19 +13,17 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=${WOLFSSL_LICENSE_MD5}"
 
 DEPENDS += "util-linux-native unzip-native"
 
-# This recipe provides:
-# - wolfssl-fips-ready (automatic from recipe name)
-# - virtual/wolfssl (build-time interface for switching implementations)
-# At runtime, the wolfssl-fips-ready package provides wolfssl to satisfy package dependencies
-PROVIDES += "virtual/wolfssl"
-RPROVIDES:${PN} += "virtual-wolfssl"
-
-inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility
+# We can provide for any of them.  Right now we're going to default to this being
+# always so and then handle it as an .inc that does the right things based off
+# of some WOLFSSL_COMPAT settings in the layer so it does the right things ALWAYS.
+PROVIDES += "virtual/wolfssl virtual/libssl virtual/openssl"
 
 # Handle the overrides for RPROVIDES on this recipe so it's consistent with everything
 python __anonymous() {
-    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl')
+    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl virtual-libssl virtual-openssl')
 }
+
+inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility
 
 # Grab the knobs settings for our common configs for wolfclu, etc.  This is opposed to
 # the convoluted contortions that was done for the varying packages modes that we used

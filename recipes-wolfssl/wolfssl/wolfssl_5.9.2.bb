@@ -7,8 +7,15 @@ LICENSE = "GPL-3.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 DEPENDS += "util-linux-native"
 
-PROVIDES += "virtual/wolfssl"
-RPROVIDES:${PN} += "virtual-wolfssl"
+# We can provide for any of them.  Right now we're going to default to this being
+# always so and then handle it as an .inc that does the right things based off
+# of some WOLFSSL_COMPAT settings in the layer so it does the right things ALWAYS.
+PROVIDES += "virtual/wolfssl virtual/libssl virtual/openssl"
+
+# Handle the overrides for RPROVIDES on this recipe so it's consistent with everything
+python __anonymous() {
+    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl virtual-libssl virtual-openssl')
+}
 
 SRC_URI = "git://github.com/wolfssl/wolfssl.git;nobranch=1;protocol=https;rev=ac01707f552c611fbd135cc723b2682b3e7f80f2"
 
@@ -23,10 +30,6 @@ python () {
 
 inherit autotools pkgconfig wolfssl-helper wolfssl-compatibility
 
-# Handle the overrides for RPROVIDES on this recipe so it's consistent with everything
-python __anonymous() {
-    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl')
-}
 
 # Grab the knobs settings for our common configs for wolfclu, etc.  This is opposed to
 # the convoluted contortions that was done for the varying packages modes that we used
