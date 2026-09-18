@@ -18,12 +18,21 @@ DEPENDS += "util-linux-native unzip-native"
 # - virtual/wolfssl (build-time interface for switching implementations)
 # At runtime, the wolfssl-fips-ready package provides wolfssl to satisfy package dependencies
 PROVIDES += "virtual/wolfssl"
+RPROVIDES:${PN} += "virtual-wolfssl"
 
 inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility
 
+# Handle the overrides for RPROVIDES on this recipe so it's consistent with everything
 python __anonymous() {
-    wolfssl_varAppend(d, 'RPROVIDES', '${PN}', ' wolfssl')
+    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl')
 }
+
+# Grab the knobs settings for our common configs for wolfclu, etc.  This is opposed to
+# the convoluted contortions that was done for the varying packages modes that we used
+# do.
+require wolfssl-packageconfigs.inc
+require wolfssl-install-helpers.inc
+
 
 # Lower preference so regular wolfssl is default
 # Users must explicitly set PREFERRED_PROVIDER_virtual/wolfssl = "wolfssl-fips-ready"

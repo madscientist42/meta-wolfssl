@@ -52,7 +52,7 @@ DEPENDS += " virtual/wolfssl \
 inherit setuptools3 wolfssl-compatibility
 
 python __anonymous() {
-    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' wolfssl python3 python3-cffi')
+    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' virtual-wolfssl python3 python3-cffi')
 }
 
 python () {

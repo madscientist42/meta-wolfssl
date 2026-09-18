@@ -1,0 +1,1 @@
+RDEPENDS:${PN} += "${PACKAGE_LIST}"

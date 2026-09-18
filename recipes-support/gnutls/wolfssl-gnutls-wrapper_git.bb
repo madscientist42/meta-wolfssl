@@ -13,7 +13,7 @@ DEPENDS = "virtual/wolfssl gnutls"
 inherit pkgconfig wolfssl-compatibility
 
 python __anonymous() {
-    wolfssl_varSet(d, 'RDEPENDS', '${PN}', 'wolfssl gnutls bash')
+    wolfssl_varSet(d, 'RDEPENDS', '${PN}', 'virtual-wolfssl gnutls bash')
 }
 
 SRC_URI = "git://github.com/wolfssl/gnutls-wolfssl.git;protocol=https;branch=main;destsuffix=git"

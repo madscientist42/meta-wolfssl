@@ -20,6 +20,7 @@ def wolfssl_conditional_require(d, package_name, inc_path):
 
     if bb.utils.contains('WOLFSSL_FEATURES', package_name, True, False, d) or \
        bb.utils.contains('IMAGE_INSTALL', package_name, True, False, d):
+        bb.warn('Found package ' + package_name + ' in the desired place(s) for ' + d.getVar('THISDIR', True))
         # Get the meta-wolfssl layer directory from variable set in layer.conf 
         # (You DO NOT need to specify your layer's directory to do this sort of thing!)
         inc_file = inc_path

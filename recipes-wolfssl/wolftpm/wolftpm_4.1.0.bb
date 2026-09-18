@@ -26,7 +26,7 @@ python () {
 inherit autotools pkgconfig wolfssl-helper wolfssl-compatibility
 
 python __anonymous() {
-    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' wolfssl')
+    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' virtual-wolfssl')
 }
 
 # wolfTPM 4.x added a firmware-TPM (fwTPM) server that is enabled by default on

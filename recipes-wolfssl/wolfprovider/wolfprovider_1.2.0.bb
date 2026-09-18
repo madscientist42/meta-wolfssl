@@ -19,7 +19,7 @@ inherit autotools pkgconfig wolfssl-helper wolfssl-compatibility
 
 python __anonymous() {
     wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'wolfprovider')
-    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' wolfssl openssl')
+    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' virtual-wolfssl openssl')
     wolfssl_varSet(d, 'FILES', '${PN}-dev', '${includedir} ${libdir}/pkgconfig/*.pc')
     wolfssl_varAppend(d, 'FILES', '${PN}', ' ${libdir}/libwolfprov.so ${libdir}/ssl-3/modules/libwolfprov.so ${libdir}/ossl-modules/libwolfprov.so')
     wolfssl_varAppend(d, 'FILES', '${PN}', ' ${sysconfdir}/ssl/openssl.cnf.d/wolfprovider*.conf')

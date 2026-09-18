@@ -27,7 +27,7 @@ python () {
 inherit autotools pkgconfig wolfssl-helper wolfssl-compatibility
 
 python __anonymous() {
-    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' wolfssl')
+    wolfssl_varAppend(d, 'RDEPENDS', '${PN}', ' virtual-wolfssl')
 }
 
 EXTRA_OECONF = "--with-libwolfssl-prefix=${STAGING_EXECPREFIXDIR}"

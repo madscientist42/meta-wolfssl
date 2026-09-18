@@ -16,6 +16,11 @@ DEPENDS += "util-linux-native"
 # At runtime, the wolfssl-fips package provides wolfssl to satisfy package dependencies
 PROVIDES += "virtual/wolfssl"
 
+# Handle the overrides for RPROVIDES on this recipe so it's consistent with everything
+python __anonymous() {
+    wolfssl_varSet(d, 'RPROVIDES', '${PN}', 'virtual-wolfssl')
+}
+
 inherit autotools pkgconfig wolfssl-helper wolfssl-commercial wolfssl-fips-helper wolfssl-compatibility
 
 # Lower preference so regular wolfssl is default
@@ -55,6 +60,13 @@ COMMERCIAL_BUNDLE_SRC_DIR = "${WOLFSSL_SRC_DIRECTORY}"
 # Use helper functions from wolfssl-commercial.bbclass for conditional configuration
 SRC_URI = "${@get_commercial_src_uri(d)}"
 S = "${@get_commercial_source_dir(d)}"
+
+# Grab the knobs settings for our common configs for wolfclu, etc.  This is opposed to
+# the convoluted contortions that was done for the varying packages modes that we used
+# do.
+require wolfssl-packageconfigs.inc
+require wolfssl-install-helpers.inc
+
 
 # Optional: switch to GCS/tarball flow (gs:// URI) when set
 require inc/wolfssl-fips/wolfssl-commercial-gcs.inc
